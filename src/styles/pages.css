@@ -1,0 +1,219 @@
+/* ── Dashboard Page ───────────────────────────────────── */
+.dashboard-section {
+	margin-bottom: 32px;
+}
+
+.dashboard-section-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 16px;
+}
+
+.media-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+	gap: 16px;
+}
+
+/* ── Board Page ──────────────────────────────────────── */
+.board-columns {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 16px;
+	align-items: start;
+}
+
+.board-column {
+	background: var(--bg-surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	min-height: 300px;
+}
+
+.board-column-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px;
+	border-bottom: 1px solid var(--border);
+}
+
+.board-column-title {
+	font-size: 15px;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.board-column-count {
+	background: rgba(255, 255, 255, 0.08);
+	padding: 2px 8px;
+	border-radius: 100px;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--text-secondary);
+}
+
+.board-column-body {
+	padding: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.board-column.drag-over {
+	border-color: var(--accent-violet);
+	background: rgba(139, 92, 246, 0.05);
+}
+
+/* Board card (compact) */
+.board-card {
+	display: flex;
+	gap: 12px;
+	padding: 12px;
+	background: var(--bg-elevated);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-sm);
+	cursor: grab;
+	transition: all var(--transition-fast);
+}
+
+.board-card:hover {
+	border-color: var(--border-hover);
+	box-shadow: var(--shadow-sm);
+}
+
+.board-card:active {
+	cursor: grabbing;
+	opacity: 0.8;
+}
+
+.board-card.dragging {
+	opacity: 0.4;
+}
+
+.board-card-cover {
+	width: 48px;
+	height: 64px;
+	border-radius: 6px;
+	overflow: hidden;
+	flex-shrink: 0;
+	background: linear-gradient(
+		135deg,
+		rgba(139, 92, 246, 0.15),
+		rgba(6, 182, 212, 0.1)
+	);
+}
+
+.board-card-cover img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.board-card-placeholder-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	font-size: 20px;
+}
+
+.board-card-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.board-card-title {
+	font-size: 13px;
+	font-weight: 600;
+	margin-bottom: 4px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.board-card-meta {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+
+.board-card-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	opacity: 0;
+	transition: opacity var(--transition-fast);
+}
+
+.board-card:hover .board-card-actions {
+	opacity: 1;
+}
+
+/* ── Settings Page ───────────────────────────────────── */
+.settings-section {
+	background: var(--bg-surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-md);
+	padding: 24px;
+	margin-bottom: 16px;
+}
+
+.settings-section h3 {
+	font-size: 16px;
+	font-weight: 600;
+	margin-bottom: 8px;
+}
+
+.settings-section p {
+	font-size: 13px;
+	color: var(--text-secondary);
+	margin-bottom: 16px;
+}
+
+.settings-danger {
+	border-color: rgba(239, 68, 68, 0.2);
+}
+
+.settings-danger h3 {
+	color: var(--danger);
+}
+
+/* ── Ring Charts Row ─────────────────────────────────── */
+.rings-row {
+	display: flex;
+	gap: 24px;
+	flex-wrap: wrap;
+}
+
+.ring-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+}
+
+.ring-item-label {
+	font-size: 12px;
+	color: var(--text-secondary);
+}
+
+/* ── Responsive Board ────────────────────────────────── */
+@media (max-width: 768px) {
+	.board-columns {
+		grid-template-columns: 1fr;
+	}
+
+	.board-column {
+		min-height: unset;
+	}
+
+	.media-grid {
+		grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+	}
+}
