@@ -16,6 +16,7 @@ export default defineSchema({
 		notes: v.optional(v.string()),
 		progress: v.optional(v.string()),
 		dateCompleted: v.optional(v.string()),
+		tmdbId: v.optional(v.number()),
 	})
 		.index("by_user", ["userId"])
 		.index("by_user_status", ["userId", "status"])

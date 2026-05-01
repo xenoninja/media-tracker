@@ -3,6 +3,7 @@ import { useState } from "react";
 import { api } from "../../convex/_generated/api";
 import type { Doc } from "../../convex/_generated/dataModel";
 import { useToast } from "./Toast";
+import { TMDBSearch } from "./TMDBSearch";
 
 interface MediaModalProps {
 	entry?: Doc<"media">;
@@ -20,6 +21,8 @@ export function MediaModal({ entry, onClose }: MediaModalProps) {
 	const [rating, setRating] = useState(entry?.rating ?? 0);
 	const [progress, setProgress] = useState(entry?.progress ?? "");
 	const [notes, setNotes] = useState(entry?.notes ?? "");
+	const [tmdbId, setTmdbId] = useState<number | undefined>(entry?.tmdbId ?? undefined);
+	const [showTmdbSearch, setShowTmdbSearch] = useState(false);
 	const [saving, setSaving] = useState(false);
 
 	const addMutation = useMutation(api.media.add);
@@ -27,6 +30,8 @@ export function MediaModal({ entry, onClose }: MediaModalProps) {
 	const { showToast } = useToast();
 
 	const isEdit = !!entry;
+	const canSearchTmdb = type === "movie" || type === "tvshow";
+	const tmdbType = type === "tvshow" ? "tv" : "movie";
 
 	const handleSave = async () => {
 		if (!title.trim()) return;
@@ -43,6 +48,7 @@ export function MediaModal({ entry, onClose }: MediaModalProps) {
 					rating: rating || undefined,
 					progress: progress.trim() || undefined,
 					notes: notes.trim() || undefined,
+					tmdbId,
 				});
 				showToast("success", `已更新「${title}」`);
 			} else {
@@ -54,6 +60,7 @@ export function MediaModal({ entry, onClose }: MediaModalProps) {
 					rating: rating || undefined,
 					progress: progress.trim() || undefined,
 					notes: notes.trim() || undefined,
+					tmdbId,
 				});
 				showToast("success", `已添加「${title}」`);
 			}
@@ -63,6 +70,28 @@ export function MediaModal({ entry, onClose }: MediaModalProps) {
 		} finally {
 			setSaving(false);
 		}
+	};
+
+	const handleTypeChange = (newType: MediaType) => {
+		setType(newType);
+		setTmdbId(undefined);
+		setShowTmdbSearch(false);
+	};
+
+	const handleTitleChange = (value: string) => {
+		setTitle(value);
+		if (canSearchTmdb && value.trim().length >= 2) {
+			setShowTmdbSearch(true);
+		} else {
+			setShowTmdbSearch(false);
+		}
+	};
+
+	const handleTmdbSelect = (result: { id: number; title: string; coverUrl?: string }) => {
+		setTitle(result.title);
+		setCoverUrl(result.coverUrl ?? "");
+		setTmdbId(result.id);
+		setShowTmdbSearch(false);
 	};
 
 	const handleOverlayClick = (e: React.MouseEvent) => {
@@ -83,16 +112,29 @@ export function MediaModal({ entry, onClose }: MediaModalProps) {
 					<div className="form-group">
 						<label className="form-label" htmlFor="media-title">
 							标题 *
+							{canSearchTmdb && (
+								<span className="tmdb-badge">
+									{tmdbId ? "✅ 已关联 TMDB" : "🔍 支持 TMDB 搜索"}
+								</span>
+							)}
 						</label>
 						<input
 							id="media-title"
 							className="form-input"
 							type="text"
 							value={title}
-							onChange={(e) => setTitle(e.target.value)}
-							placeholder="输入标题..."
+							onChange={(e) => handleTitleChange(e.target.value)}
+							placeholder={canSearchTmdb ? "输入标题搜索 TMDB..." : "输入标题..."}
 							autoFocus
 						/>
+						{canSearchTmdb && (
+							<TMDBSearch
+								query={title}
+								type={tmdbType}
+								visible={showTmdbSearch}
+								onSelect={handleTmdbSelect}
+							/>
+						)}
 					</div>
 
 					<div className="form-row">
@@ -104,7 +146,7 @@ export function MediaModal({ entry, onClose }: MediaModalProps) {
 								id="media-type"
 								className="form-select"
 								value={type}
-								onChange={(e) => setType(e.target.value as MediaType)}
+								onChange={(e) => handleTypeChange(e.target.value as MediaType)}
 							>
 								<option value="movie">🎬 电影</option>
 								<option value="tvshow">📺 剧集</option>

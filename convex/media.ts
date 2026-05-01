@@ -139,6 +139,7 @@ export const add = mutation({
 		rating: v.optional(v.number()),
 		notes: v.optional(v.string()),
 		progress: v.optional(v.string()),
+		tmdbId: v.optional(v.number()),
 	},
 	handler: async (ctx, args) => {
 		const userId = await requireUser(ctx);
@@ -169,6 +170,7 @@ export const update = mutation({
 		rating: v.optional(v.number()),
 		notes: v.optional(v.string()),
 		progress: v.optional(v.string()),
+		tmdbId: v.optional(v.number()),
 	},
 	handler: async (ctx, args) => {
 		const userId = await requireUser(ctx);
@@ -241,26 +243,27 @@ export const remove = mutation({
 
 export const importAll = mutation({
 	args: {
-		entries: v.array(
-			v.object({
-				type: v.union(
-					v.literal("movie"),
-					v.literal("tvshow"),
-					v.literal("book"),
+				entries: v.array(
+					v.object({
+						type: v.union(
+							v.literal("movie"),
+							v.literal("tvshow"),
+							v.literal("book"),
+						),
+						title: v.string(),
+						coverUrl: v.optional(v.string()),
+						status: v.union(
+							v.literal("watching"),
+							v.literal("completed"),
+							v.literal("planned"),
+						),
+						rating: v.optional(v.number()),
+						notes: v.optional(v.string()),
+						progress: v.optional(v.string()),
+						dateCompleted: v.optional(v.string()),
+						tmdbId: v.optional(v.number()),
+					}),
 				),
-				title: v.string(),
-				coverUrl: v.optional(v.string()),
-				status: v.union(
-					v.literal("watching"),
-					v.literal("completed"),
-					v.literal("planned"),
-				),
-				rating: v.optional(v.number()),
-				notes: v.optional(v.string()),
-				progress: v.optional(v.string()),
-				dateCompleted: v.optional(v.string()),
-			}),
-		),
 		clearExisting: v.optional(v.boolean()),
 	},
 	handler: async (ctx, args) => {
